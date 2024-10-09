@@ -1,4 +1,4 @@
-package com.karmoalteberg.models
+package com.karmoalteberg.models.config
 
 /**
  * Usage:
@@ -13,19 +13,19 @@ package com.karmoalteberg.models
  */
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 class DynamicConfiguration(
-    val fileNamePattern: String,
-    val fields: List<DynamicConfigurationField>,
-    val mappings: Map<String, Map<String, String>>
+	val fileNamePattern: String,
+	val fields: List<DynamicConfigurationField>,
+	val mappings: Map<String, Map<String, String>>
 ) {
-    fun validateFilename(input: String) = Regex(fileNamePattern).matches(input)
+	fun validateFilename(input: String) = Regex(fileNamePattern).matches(input)
 
-    fun tryMap(mappingKey: String, input: String): String? {
-        if (!mappings.containsKey(mappingKey)) return null
+	fun tryMap(mappingKey: String, input: String): String? {
+		if (!mappings.containsKey(mappingKey)) return null
 
-        return mappings[mappingKey]!!.getOrDefault(input, null)
-    }
+		return mappings[mappingKey]!!.getOrDefault(input, null)
+	}
 
-    companion object {
-        const val GLOBAL_DATE_FORMAT = "yyyy-MM-dd"
-    }
+	companion object {
+		const val GLOBAL_DATE_FORMAT = "yyyy-MM-dd"
+	}
 }
