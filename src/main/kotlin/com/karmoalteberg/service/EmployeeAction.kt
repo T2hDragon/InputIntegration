@@ -5,21 +5,45 @@ import com.karmoalteberg.models.output.Employee
 import com.karmoalteberg.models.output.PayComponent
 import com.karmoalteberg.builder.EmployeeBuilder
 import com.karmoalteberg.builder.PayComponentBuilder
+import com.karmoalteberg.builder.EmployeeCodeBuilder
 import com.karmoalteberg.transformer.DateTransformer
+import java.time.LocalDateTime
 
 class EmployeeAction(
 	val dateTransformer: DateTransformer,
+	val employeeCodeBuilder: EmployeeCodeBuilder,
 ) {
+	/**
+	 * Is responsible for creating an employee from a map of data
+	 * Is responsible for creating components and confirming their existance
+	 * Validity of the component contents is checked by the builder
+	 */
 	fun createEmployee(data: Map<String, String>): Pair<Employee?, MutableList<String>> {
 		val errors = mutableListOf<String>()
-		val action = Action.fromString(data["ACTION"]?: "")
+		val actionString = data["ACTION"]?: ""
+		val action = Action.fromString(actionString)
 		if (action == null) {
-			errors.add("Invalid action")
+
+			errors.add("Invalid action \"$actionString\"")
 			return Pair(null, errors)
 		}
-		val employeeBuilder = EmployeeBuilder(action)
+		val employeeBuilder = EmployeeBuilder(action, employeeCodeBuilder)
 
-		var err = employeeBuilder.withEmployeeCode(data["worker_personalCode"]?: "")
+		var employeeCode = data["contract_workerId"]?: ""
+		if (action == Action.HIRE && employeeCode.isBlank()) {
+			val employeeHireDateString = data["contract_workStartDate"] ?: ""
+			if (employeeHireDateString.isBlank()) {
+				errors.add("Employee hire time is required for creating employee code")
+			} else {
+				val (employeeHireDate, timeFormetErr) = dateTransformer.transformToDate(employeeHireDateString)
+				if (timeFormetErr !== null) {
+					errors.add("Failed to format employee hire date to create employee code -> " + timeFormetErr)
+				} else {
+					employeeCode = employeeCodeBuilder.build(employeeHireDate!!)
+				}
+			}
+		}
+		var err = employeeBuilder.withEmployeeCode(employeeCode)
 		if (err !== null) {
 			errors.add(err)
 		}

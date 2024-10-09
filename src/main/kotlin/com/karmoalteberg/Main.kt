@@ -6,6 +6,7 @@ import com.karmoalteberg.models.output.PayComponent
 import com.karmoalteberg.adapter.csv.EmployeeAction
 import com.karmoalteberg.service.EmployeeAction as EmployeeActionService
 import com.karmoalteberg.transformer.DateTransformer
+import com.karmoalteberg.builder.EmployeeCodeBuilder
 import kotlin.io.println
 
 fun main(args: Array<String>) {
@@ -18,7 +19,8 @@ fun main(args: Array<String>) {
 private fun processEmployeeData() {
 	val csvFetcher = EmployeeAction()
 	val dateTransformer = DateTransformer(PayComponent.DATE_FORMAT, true)
-	val employeeActionService = EmployeeActionService(dateTransformer)
+	val employeeCodeBuilder = EmployeeCodeBuilder()
+	val employeeActionService = EmployeeActionService(dateTransformer, employeeCodeBuilder)
 	val csvFiles = File("./input").walk().filter { it.extension == "csv" }.toList()
 	csvFiles.forEach {
 		val csvRows = csvFetcher.get(it.absolutePath)

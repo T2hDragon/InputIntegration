@@ -10,7 +10,8 @@ import kotlin.text.toDoubleOrNull
 import kotlin.text.toDouble
 
 class EmployeeBuilder(
-	private val action: Action
+	private val action: Action,
+	private val employeeCodeBuilder: EmployeeCodeBuilder,
 ) {
 	private var employeeCode: String? = null
 	private var data: Map<String, Any>? = null

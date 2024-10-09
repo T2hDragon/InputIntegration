@@ -60,7 +60,7 @@ class PayComponentBuilder(
 	}
 
 	fun withStartDate(startDate: String): String? {
-		val (formattedDate, err) = this.dateTransformer.transform(startDate)
+		val (formattedDate, err) = this.dateTransformer.transformToFormat(startDate)
 		if (err != null) {
 			return "Failed to create startDate -> " + err.message
 		}
@@ -70,7 +70,7 @@ class PayComponentBuilder(
 	}
 
 	fun withEndDate(endDate: String): String? {
-		val (formattedDate, err) = this.dateTransformer.transform(endDate)
+		val (formattedDate, err) = this.dateTransformer.transformToFormat(endDate)
 		if (err != null) {
 			return "Failed to create endDate -> " + err.message
 		}
