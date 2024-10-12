@@ -19,7 +19,7 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 fun main(args: Array<String>) {
 	val csvFetcher = EmployeeContractAction()
 	val dateTransformer = DateTransformer(PayComponent.DATE_FORMAT, true)
-	val employeeCodeBuilder = EmployeeCodeBuilder()
+	val employeeCodeBuilder = EmployeeCodeBuilder(dateTransformer)
 	val personIdGenerator = IdGenerator()
 	val salarydGenerator = IdGenerator()
 	val employeeActionService = EmployeeActionService(dateTransformer, employeeCodeBuilder, personIdGenerator, salarydGenerator)
@@ -30,9 +30,10 @@ fun main(args: Array<String>) {
 		val errors = mutableListOf<String>()
 		val csvRows = csvFetcher.get(it.absolutePath)
 		csvRows.forEach {
+			val systemId = it["SystemId"] ?: ""
 			val (employee, errs) = employeeActionService.createEmployee(it)
-			if (errs.isNotEmpty()) {
-				errors.addAll(errs)
+			errs.forEach {
+				errors.add("$systemId: $it")
 			}
 
 			if (employee !== null) {

@@ -27,6 +27,7 @@ class EmployeeAction(
 	 */
 	fun createEmployee(data: Map<String, String>): Pair<EmployeeContract?, MutableList<String>> {
 		val errors = mutableListOf<String>()
+		var err: String? = null
 		val actionString = data["ACTION"]?: ""
 		val action = Action.fromString(actionString)
 		if (action == null) {
@@ -38,22 +39,26 @@ class EmployeeAction(
 		val personBuilder = PersonBuilder(action, dateTransformer)
 		val salaryComponentBuilder = SalaryComponentBuilder(action, dateTransformer)
 
-		var employeeCode = data["contract_workerId"] ?: ""
-		if (action == Action.HIRE && employeeCode.isBlank()) {
+		var employeeCode = data["contract_workerId"]
+		if (action == Action.HIRE && (employeeCode == null || employeeCode.isBlank())) {
 			val employeeHireDateString = data["contract_workStartDate"] ?: ""
 			if (employeeHireDateString.isBlank()) {
 				errors.add("Employee hire time is required for creating employee code")
 			} else {
-				val (employeeHireDate, err) = dateTransformer.transformToDate(employeeHireDateString)
+				val employeeCodeBuild = employeeCodeBuilder.build(employeeHireDateString)
+				employeeCode = employeeCodeBuild.first
+				err = employeeCodeBuild.second
 				if (err != null) {
 					errors.add("Failed to format employee hire date to create employee code -> $err")
-				} else {
-					employeeCode = employeeCodeBuilder.build(employeeHireDate!!)
 				}
 			}
 		}
 
-		var err = employeeContractBuilder.withEmployeeCode(employeeCode)
+		if (employeeCode.isNullOrBlank()) {
+			errors.add("Employee code is required")
+			return Pair(null, errors)
+		}
+		err = employeeContractBuilder.withEmployeeCode(employeeCode)
 		if (err !== null) {
 			errors.add(err)
 		}
@@ -72,8 +77,11 @@ class EmployeeAction(
 			if (payComponentErr !== null) {
 				errors.add("Unable to make salary component -> " + payComponentErr)
 			} else {
+				salaryPayComponent = payComponent
 				employeeContractBuilder.addPayComponent(payComponent!!)
 			}
+		} else {
+			errors.add("SalaryPayComponent was not made due to missing \"pay_amount\" or \"pay_currency\" field")
 		}
 
 		if ((data["compensation_amount"] ?: "").isNotBlank() || (data["compensation_currency"] ?: "").isNotBlank()) {
@@ -89,7 +97,6 @@ class EmployeeAction(
 			if (payComponentErr !== null) {
 				errors.add("Unable to make compensation component -> " + payComponentErr)
 			} else {
-				salaryPayComponent = payComponent
 				employeeContractBuilder.addPayComponent(payComponent!!)
 			}
 		}
@@ -136,69 +143,52 @@ class EmployeeAction(
 			}
 		}
 
-		val signatureDateString = data["contract_signatureDate"]
-		if (signatureDateString !== null && signatureDateString.isNotBlank()) {
-			 val (signatureDateFromInput, createdAtErr) = dateTransformer.transformToFormat(signatureDateString)
-			if (createdAtErr !== null) {
-				errors.add("Failed to format employee contract signiture date -> " + createdAtErr)
+		val signatureDateString = data["contract_signatureDate"] ?: ""
+		if (signatureDateString.isNotBlank()) {
+			err = personBuilder.withTerminationDate(signatureDateString)
+			if (err !== null) {
+				errors.add(err)
 			}
-			if (signatureDateFromInput !== null) {
-				err = personBuilder.withTerminationDate(signatureDateFromInput)
-			}
-		}
-		if (err !== null) {
-			errors.add(err)
 		}
 
 		val (person, personBuildErr) = personBuilder.build()
 		if (personBuildErr !== null) {
-			errors.add("Failed to create person -> " + personBuildErr)
+			errors.add("Failed to create Data person -> " + personBuildErr)
 		}
 		if (person !== null) {
 			employeeContractBuilder.withPerson(person)
 		}
 
 		// Create salary component
-		if (salaryPayComponent !== null && person !== null) {
-			val salaryId = salaryIdGenerator.generate()
-			err = salaryComponentBuilder.withId(salaryId)
-			if (err !== null) {
-				errors.add("Unable add salary id to SalaryComponent -> " + err)
-			}
-	
+		val salaryId = salaryIdGenerator.generate()
+		err = salaryComponentBuilder.withId(salaryId)
+		if (err !== null) {
+			errors.add("Unable add salary id to SalaryComponent -> " + err)
+		}
+		
+		if (person === null) {
+			errors.add("Person id is required for salary component")
+		} else {
 			err = salaryComponentBuilder.withPersonId(person.id)
 			if (err !== null) {
 				errors.add("Unable add person id to SalaryComponent -> " + err)
 			}
+		}
 
-			err = salaryComponentBuilder.withAmount(salaryPayComponent.amount.toString())
+		if (salaryPayComponent !== null) {
+			err = salaryComponentBuilder.withSalaryPayComponent(salaryPayComponent)
 			if (err !== null) {
-				errors.add("Unable add amount to SalaryComponent -> " + err)
+				errors.add("Unable add salary pay component to SalaryComponent -> " + err)
 			}
+		}
 
-			err = salaryComponentBuilder.withCurrency(salaryPayComponent.currency)
-			if (err !== null) {
-				errors.add("Unable add currency to SalaryComponent -> " + err)
-			}
+		val (salaryComponent, salaryComponentBuildErr) = salaryComponentBuilder.build()
+		if (salaryComponentBuildErr !== null) {
+			errors.add("Failed to create Data salary component -> " + salaryComponentBuildErr)
+		}
+		if (salaryComponent !== null) {
+			employeeContractBuilder.withSalaryComponent(salaryComponent)
 
-			err = salaryComponentBuilder.withStartDate(salaryPayComponent.startDate)
-			if (err !== null) {
-				errors.add("Unable add start date to SalaryComponent -> " + err)
-			}
-
-			err = salaryComponentBuilder.withEndDate(salaryPayComponent.endDate)
-			if (err !== null) {
-				errors.add("Unable add end date to SalaryComponent -> " + err)
-			}
-
-			val (salaryComponent, salaryComponentBuildErr) = salaryComponentBuilder.build()
-			if (salaryComponentBuildErr !== null) {
-				errors.add("Failed to create salary component -> " + salaryComponentBuildErr)
-			}
-			if (salaryComponent !== null) {
-				employeeContractBuilder.withSalaryComponent(salaryComponent)
-
-			}
 		}
 
 		val (employee, employeeBuildErr) = employeeContractBuilder.build()

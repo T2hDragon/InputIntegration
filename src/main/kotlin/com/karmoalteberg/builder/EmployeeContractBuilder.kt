@@ -26,14 +26,14 @@ class EmployeeContractBuilder(
 			return Pair(null, "Employee code is required")
 		}
 
-		if (data.size == 0) {
-			return Pair(null, "Data is required")
+		var employeeData: Map<String, Any?>? = null
+		if (data.isNotEmpty()) {
+			employeeData = data
 		}
-
 		return Pair(EmployeeContract(
 			employeeCode = employeeCode!!,
 			action = action,
-			data = data,
+			data = employeeData,
 			payComponents = payComponents,
 		), null)
 	}

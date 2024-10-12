@@ -82,9 +82,16 @@ make start
 | (Compensation) PayComponent.startDate     | pay_currecompensation_effectiveFromncy    |
 | (Compensation) PayComponent.endDate       | compensation_effectiveTo                  |
 
+## Errors
+
+Errors are return as a trace to its failure. One row might have multiple reasons for failure and those could be connected. Each row is represented by its systemId in the prefix of the error message.
+
 ## Questions
 
 - Why is there a need for contractStart/End/StartedAt. They are mentioned, such as terminate being assumed to be ContractCreatedAt, but unsure where it is being used and it should not be shown in the output. Definitely does not belong in the output as of now
 - What is Data supposed to be? As of right now, I am using it as all the existing fields to be placed there.
 Is the given mapping correct?
 - Does Date format need to be consistant throughout the row, throughout the entire CSV file or in case of multiple files, across all csv files?
+- Is Person data only mandatory for HIRE action?
+- "(optional) bonus points for an SQL script that inserts the same data as the hypothetical
+REST API would based on the JSON." Am I correct that this SQL script takes in the output JSON and from that alone adds the values to the database? Aka script that takes in the output JSON and knows to how to set take values from it and put them to the database?

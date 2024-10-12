@@ -12,4 +12,16 @@ enum class Action {
             }
         }
     }
+
+    fun isHire(): Boolean {
+        return this == HIRE
+    }
+
+    fun isChange(): Boolean {
+        return this == CHANGE
+    }
+
+    fun isTerminate(): Boolean {
+        return this == TERMINATE
+    }
 }

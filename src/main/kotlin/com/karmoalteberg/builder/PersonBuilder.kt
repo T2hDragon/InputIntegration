@@ -26,7 +26,7 @@ class PersonBuilder(
 			return Pair(null, "Id is required")
 		}
 
-		if (fullName == null) {
+		if (action.isHire() && fullName == null) {
 			return Pair(null, "Full name is required")
 		}
 
@@ -34,7 +34,7 @@ class PersonBuilder(
 			return Pair(null, "Employee code is required")
 		}
 
-		if (hireDate == null) {
+		if (action.isHire() && hireDate == null) {
 			return Pair(null, "Hire date is required")
 		}
 
@@ -44,11 +44,11 @@ class PersonBuilder(
 
 		return Pair(Person(
 			id = id!!,
-			fullName = fullName!!,
+			employeeCode = employeeCode!!,
+			fullName = fullName,
 			gender = gender,
 			birthdate = birthdate,
-			employeeCode = employeeCode!!,
-			hireDate = hireDate!!,
+			hireDate = hireDate,
 			terminationDate = terminationDate,
 		), null)
 	}

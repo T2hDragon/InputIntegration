@@ -6,7 +6,7 @@ import java.time.LocalDate
 class EmployeeContract(
 	val employeeCode: String,
 	val action: Action,
-	val data: Map<String, Any?>,
+	val data: Map<String, Any?>?,
 	val payComponents: List<PayComponent>,
 ) {
 }
