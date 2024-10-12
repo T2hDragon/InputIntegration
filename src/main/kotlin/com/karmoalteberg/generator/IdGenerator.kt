@@ -1,10 +1,8 @@
 package com.karmoalteberg.generator
 
 
-class IdGenerator() {
-	private var id: Int = 1
-
+class IdGenerator(private var latestId: Int = 1) {
 	fun generate(): Int {
-		return id++
+		return latestId++
 	}
 }

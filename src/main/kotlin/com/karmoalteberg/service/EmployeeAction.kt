@@ -10,6 +10,7 @@ import com.karmoalteberg.builder.PersonBuilder
 import com.karmoalteberg.builder.SalaryComponentBuilder
 import com.karmoalteberg.transformer.DateTransformer
 import com.karmoalteberg.generator.IdGenerator
+import com.karmoalteberg.adapter.mariadb.PersonRepository
 import java.time.LocalDateTime
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -19,6 +20,7 @@ class EmployeeAction(
 	val employeeCodeBuilder: EmployeeCodeBuilder,
 	val personIdGenerator: IdGenerator,
 	val salaryIdGenerator: IdGenerator,
+	val personRepository: PersonRepository,
 ) {
 	/**
 	 * Is responsible for creating an employee from a map of data
@@ -103,7 +105,10 @@ class EmployeeAction(
 
 
 		// Create person
-		val personId = personIdGenerator.generate()
+		var personId = personRepository.getIdByEmployeeCode(employeeCode)
+		if (personId == null) {
+			personId = personIdGenerator.generate()
+		}
 		err = personBuilder.withId(personId)
 		if (err !== null) {
 			errors.add("Unable add person id to Person -> " + err)

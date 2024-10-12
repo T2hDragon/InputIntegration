@@ -10,11 +10,23 @@ Handles data from different sources, checks that it meets required standards, an
 
 ## How to run
 
-Run the following command to run the solution
+1. Set enviournment variables
 
-```bash
-make start
-```
+    ```bash
+    cp .env-example .env
+    ```
+
+2. Start the database
+
+    ```bash
+    make db-build
+    ```
+
+3. Run the following command to run the solution
+
+    ```bash
+    make start
+    ```
 
 ### Structure
 
@@ -52,7 +64,7 @@ make start
 
 &#x2610; Dockerise
 
-&#x2610; Database
+&#x2610; insert_or_update_employees to use transactions
 
 ## Test related notes
 
@@ -61,6 +73,14 @@ make start
 - Kotlin CSV
 
     Was added to not need to handle edge cases of importing data from CSV files, which is not the scope of the task. Example the use of "," as text.
+
+- dataframe-jdbc and mariadb-java-client
+
+    Needed to communicate with MariaDB database
+
+- dotenv-kotlin
+
+    Used to get enviournment variables for .env file
 
 ## Mapping
 

@@ -6,6 +6,9 @@ import com.karmoalteberg.models.output.EmployeeContract
 import com.karmoalteberg.models.output.PayComponent
 import com.karmoalteberg.models.output.Request
 import com.karmoalteberg.adapter.csv.EmployeeContractAction
+import com.karmoalteberg.adapter.mariadb.ReadDatabase
+import com.karmoalteberg.adapter.mariadb.PersonRepository
+import com.karmoalteberg.adapter.mariadb.SalaryComponentRepository
 import com.karmoalteberg.service.EmployeeAction as EmployeeActionService
 import com.karmoalteberg.transformer.DateTransformer
 import com.karmoalteberg.builder.EmployeeCodeBuilder
@@ -17,12 +20,16 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 
 fun main(args: Array<String>) {
+	val env = Env()
+	val (roDatabase, closeFunc) = ReadDatabase.create(env)
+	val personRepository = PersonRepository(roDatabase)
+	val salaryComponentRepository = SalaryComponentRepository(roDatabase)
 	val csvFetcher = EmployeeContractAction()
 	val dateTransformer = DateTransformer(PayComponent.DATE_FORMAT, true)
 	val employeeCodeBuilder = EmployeeCodeBuilder(dateTransformer)
-	val personIdGenerator = IdGenerator()
-	val salarydGenerator = IdGenerator()
-	val employeeActionService = EmployeeActionService(dateTransformer, employeeCodeBuilder, personIdGenerator, salarydGenerator)
+	val personIdGenerator = IdGenerator(personRepository.getNextId())
+	val salarydGenerator = IdGenerator(salaryComponentRepository.getNextId())
+	val employeeActionService = EmployeeActionService(dateTransformer, employeeCodeBuilder, personIdGenerator, salarydGenerator, personRepository)
 	val csvFiles = File("./input").walk().filter { it.extension == "csv" }.toList()
 	val outputRequests = mutableListOf<Request>()
 	csvFiles.forEach {
@@ -58,4 +65,6 @@ fun main(args: Array<String>) {
 		File(filePath).writeText(json)
 		println("Wrote output to $fileName")
 	}
+
+	closeFunc()
 }

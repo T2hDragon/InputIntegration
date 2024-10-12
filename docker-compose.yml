@@ -1,0 +1,12 @@
+services:
+  db:
+    image: mariadb:11.5
+    environment:
+      MARIADB_DATABASE: input-integration
+      MARIADB_USER: admin
+      MARIADB_PASSWORD: 123
+      MARIADB_ROOT_PASSWORD: 123
+    volumes:
+      - ./migrations:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"

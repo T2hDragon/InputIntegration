@@ -8,3 +8,6 @@ start: clean build run clean
 
 clean:
 	rm -fr target
+
+db-build:
+	docker-compose up --build
