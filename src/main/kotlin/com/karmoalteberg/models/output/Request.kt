@@ -4,6 +4,6 @@ class Request(
 	val uuid: String,
 	val fname: String,
 	val errors: List<String>? = null,
-	val payload: List<Employee> = emptyList(),
+	val payload: List<EmployeeContract> = emptyList(),
 ) {
 }

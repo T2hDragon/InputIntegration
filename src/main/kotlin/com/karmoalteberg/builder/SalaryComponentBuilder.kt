@@ -3,24 +3,23 @@ package com.karmoalteberg.builder
 import com.karmoalteberg.models.output.PayComponent
 import com.karmoalteberg.models.output.Action
 import com.karmoalteberg.transformer.DateTransformer
+import com.karmoalteberg.models.output.SalaryComponent
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.time.LocalDate
 
-class PayComponentBuilder(
+class SalaryComponentBuilder(
 	private val action: Action,
 	private val dateTransformer: DateTransformer,
 ) {
-	private var amount: Double? = null
+	private var id: Int? = null
+	private var personId: Int? = null
+	private var amount: Double = 0.0
 	private var currency: String? = null
 	private var startDate: String? = null
 	private var endDate: String? = null
 
-	fun build(): Pair<PayComponent?, String?> {
-		if (amount == null) {
-			return Pair(null, "Amount is required")
-		}
-
+	fun build(): Pair<SalaryComponent?, String?> {
 		if (currency == null) {
 			return Pair(null, "Currency is required")
 		}
@@ -33,11 +32,21 @@ class PayComponentBuilder(
 			return Pair(null, "End date is required")
 		}
 
-		return Pair(PayComponent(
-			amount = amount!!,
+		if (id == null) {
+			return Pair(null, "Id is required")
+		}
+
+		if (personId == null) {
+			return Pair(null, "PersonId is required")
+		}
+
+		return Pair(SalaryComponent(
+			amount = amount,
 			currency = currency!!,
 			startDate = startDate!!,
 			endDate = endDate!!,
+			id = id!!,
+			personId = personId!!,
 		), null)
 	}
 
@@ -79,4 +88,15 @@ class PayComponentBuilder(
 		return null
 	}
 
+	fun withId(id: Int): String? {
+		this.id = id
+
+		return null
+	}
+
+	fun withPersonId(personId: Int): String? {
+		this.personId = personId
+
+		return null
+	}
 }

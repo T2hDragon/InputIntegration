@@ -16,3 +16,4 @@ replay_pid*
 .idea/
 target
 tempCodeRunnerFile.jar
+*.json

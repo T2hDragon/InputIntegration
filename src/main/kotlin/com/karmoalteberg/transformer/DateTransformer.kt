@@ -35,7 +35,7 @@ class DateTransformer(
 		// Add more when client informs on new formats and add examples
 	)
 
-	fun transformToFormat(dateString: String): Pair<String?, Error?> {
+	fun transformToFormat(dateString: String): Pair<String?, String?> {
 		for (format in formats) {
 			try {
 				val date = LocalDate.parse(dateString, format)
@@ -46,7 +46,7 @@ class DateTransformer(
 				if (singlularInputDateFormat && !format.equals(this.previousFormat)) {
 					val fromFormat = this.previousFormat.toString()
 					val toFormat = format.toString()
-					return Pair(null, Error("Inconsistent date format, given \"$fromFormat\" excpected \"$toFormat\""))
+					return Pair(null, "Inconsistent date format, given \"$fromFormat\" excpected \"$toFormat\"")
 				}
 
 				return Pair(date.format(this.outputFormat), null)
@@ -55,10 +55,10 @@ class DateTransformer(
 			}
 		}
 
-		return Pair(null, Error("Invalid date format \"$dateString\""))
+		return Pair(null, "Invalid date format \"$dateString\"")
 	}
 
-	fun transformToDate(dateString: String): Pair<LocalDate?, Error?> {
+	fun transformToDate(dateString: String): Pair<LocalDate?, String?> {
 		val (stringFormat, err) = transformToFormat(dateString)
 		if (err != null) {
 			return Pair(null, err)
