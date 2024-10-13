@@ -9,5 +9,9 @@ start: clean build run clean
 clean:
 	rm -fr target
 
+test:
+	mvn test -DforkCount=0
+
+
 db-build:
 	docker-compose up --build

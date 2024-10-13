@@ -1,0 +1,8 @@
+SystemId,ACTION,worker_name,worker_personalCode,worker_gender,worker_numberOfKids,worker_motherMaidenName,worker_grandmotherMaidenName,contract_signatureDate,contract_workStartDate,contract_type,contract_endDate,contract_workerId,pay_amount,pay_currency,pay_effectiveFrom,pay_effectiveTo,compensation_amount,compensation_type,compensation_currency,compensation_effectiveFrom,compensation_effectiveTo
+02EDC235D00C4FF1A7245550E4EC3216,add,Alberto Leonard,611207NCLTAGZQ8U-NJFVQ5OWYFG,male,0,Gallagher,Sexton,160692,010792,indefinite,,611207BE,3300,USD,010122,310122,,,,,
+09E85CF7C0AE48F386ABCD14BCA66C67,update,Hazel Webster,660831ZXFFPDZS80WU1KTYSTXJAG,female,2,Vaughn,Lynn,170692,060998,indefinite,,660831F5,4400,EUR,010122,310122,500,health,EUR,010121,311221
+98CBACE8E0694049AFF768B747441F89,UPDATE,Tara Maynard,671124QOC9VZVY6UANETMKCF-XIQ,female,0,,Mcdonald,,,,060999,6711242C,4100,EUR,010122,310122,,,,,
+91E58776B2CC43CDB4C12E02EE7D0169,updte,Nikolai Roy,690619WDUNPAO1_USQ20BVI6QIUW,male,1,Savage,York,190692,020303,indefinite,,,2600,EUR,010122,310122,,,,,
+AE14B9E3D40941D7B24119215BBE2F6C,delete,,990113QPFS5RXNEUOFI3R1QNWDZQ,,,,,,,,,2005055D,,,,,,,,,
+3BCCBF9330164EF79D86F239F9875C32,add,Zaiden Arnold,0201214WABD12IJUEU1239VNHI3A,,0,Cruz,Malone,010121,010322,indefinite,,020121F8,,,,,,,,,
+6DC7CCC5F48543E5BE6243957EED0A14,add,Norah Church,03031906KOMMFZUEGBA8CJ54P_ZQ,female,5,Church,Holden,251221,010122,indefinite,,,,USD,010122,310122,,,,,

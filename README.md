@@ -65,11 +65,28 @@ Handles data from different sources, checks that it meets required standards, an
 
 &#x2610; Write functional tests
 
-&#x2610; Dockerise 
+&#x2610; Dockerise
 
 &#x2610; insert_or_update_employees to use transactions
 
-## Test related notes
+&#x2610; Tests written more clearly and split into parts (1 test checking one scenario)
+
+## Tests
+
+### How to run tests
+
+```bash
+make start
+```
+
+### Test results
+
+After tests are run, the test reports can be found in ./target/surefire-reports directory.
+
+### Writing tests
+
+Aiming to write black box tests, where only input and output should be known.
+To achieve this, tests are written with the minimal amount of mocking, aiming to mock only outsourcing requests, like database connections ([example](./src/test/kotlin/com/karmoalteberg/DatabaseMock.kt)).
 
 ### Added out of scope dependecies
 
@@ -84,6 +101,10 @@ Handles data from different sources, checks that it meets required standards, an
 - dotenv-kotlin
 
     Used to get enviournment variables for .env file
+
+- mockito-core
+
+    Used by tests to mock third party communication (example [DatabaseMock](./src/test/kotlin/com/karmoalteberg/DatabaseMock.kt))
 
 ## Mapping
 
@@ -111,7 +132,6 @@ Errors are return as a trace to its failure. One row might have multiple reasons
 
 ## SQL scripts
 
-
 ├── src/scripts
 
 │&emsp;├── [outputInsertToDb.sql](./scripts/outputInsertToDb.sql) (Example of inserting output payload to database)
@@ -126,4 +146,4 @@ Is the given mapping correct?
 - Does Date format need to be consistant throughout the row, throughout the entire CSV file or in case of multiple files, across all csv files?
 - Is Person data only mandatory for HIRE action? Should Hire action not include person table data if for example "full name" is missing?
 - "(optional) bonus points for an SQL script that inserts the same data as the hypothetical
-REST API would based on the JSON." Am I correct that this SQL script takes in the output JSON and from that alone adds the values to the database? Aka script that takes in the output JSON and knows to how to set take values from it and put them to the database?
+REST API would based on the JSON." Am I correct to assume that this SQL script takes in the output payload JSON and from that alone adds the values to the database? Aka SQL that takes in the output JSON and knows to how to set take values from it and put them to the database?

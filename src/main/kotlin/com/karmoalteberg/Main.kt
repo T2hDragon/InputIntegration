@@ -22,6 +22,21 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 fun main(args: Array<String>) {
 	val env = Env()
 	val (roDatabase, closeFunc) = ReadDatabase.create(env)
+
+	val outputRequests = generateOutput(roDatabase, "./input")
+
+	val mapper = ObjectMapper().registerKotlinModule()
+	outputRequests.forEach {
+		val json = mapper.writeValueAsString(it)
+		val fileName = it.fname.substring(0, it.fname.indexOf("."))
+		val filePath = "./output/${fileName}.json"
+		File(filePath).writeText(json)
+		println("Wrote output to $fileName")
+	}
+	closeFunc()
+}
+
+fun generateOutput(roDatabase: ReadDatabase, csvFilesDirectoryPath: String): List<Request> {
 	val personRepository = PersonRepository(roDatabase)
 	val salaryComponentRepository = SalaryComponentRepository(roDatabase)
 	val csvFetcher = EmployeeContractAction()
@@ -30,7 +45,7 @@ fun main(args: Array<String>) {
 	val personIdGenerator = IdGenerator(personRepository.getNextId())
 	val salarydGenerator = IdGenerator(salaryComponentRepository.getNextId())
 	val employeeActionService = EmployeeActionService(dateTransformer, employeeCodeBuilder, personIdGenerator, salarydGenerator, personRepository)
-	val csvFiles = File("./input").walk().filter { it.extension == "csv" }.toList()
+	val csvFiles = File(csvFilesDirectoryPath).walk().filter { it.extension == "csv" }.toList()
 	val outputRequests = mutableListOf<Request>()
 	csvFiles.forEach {
 		val employees= mutableListOf<EmployeeContract>()
@@ -56,15 +71,5 @@ fun main(args: Array<String>) {
 		))
 	}
 
-	// Output Requests to json files using Jackson as JSON serializer
-	val mapper = ObjectMapper().registerKotlinModule()
-	outputRequests.forEach {
-		val json = mapper.writeValueAsString(it)
-		val fileName = it.fname.substring(0, it.fname.indexOf("."))
-		val filePath = "./output/${fileName}.json"
-		File(filePath).writeText(json)
-		println("Wrote output to $fileName")
-	}
-
-	closeFunc()
+	return outputRequests
 }
