@@ -10,9 +10,9 @@ enum class Action() {
 	companion object {
 		fun fromString(action: String): Action? {
 			return when (action.uppercase()) {
-				"HIRE", "ADD" -> HIRE
-				"CHANGE", "UPDATE" -> CHANGE
-				"TERMINATE", "DELETE" -> TERMINATE
+				"ADD" -> HIRE
+				"UPDATE" -> CHANGE
+				"DELETE" -> TERMINATE
 				else -> null
 			}
 		}

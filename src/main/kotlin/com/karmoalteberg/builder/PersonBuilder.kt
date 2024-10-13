@@ -2,8 +2,8 @@ package com.karmoalteberg.builder
 
 import com.karmoalteberg.models.output.PayComponent
 import com.karmoalteberg.models.output.Action
-import com.karmoalteberg.transformer.DateTransformer
 import com.karmoalteberg.models.output.Person
+import com.karmoalteberg.transformer.DateTransformer
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.time.LocalDate
@@ -12,7 +12,7 @@ class PersonBuilder(
 	private val action: Action,
 	private val dateTransformer: DateTransformer,
 ) {
-	private val birthDateTransformer = DateTransformer(PayComponent.DATE_FORMAT)
+	private val birthDateTransformer = DateTransformer(DateTransformer.GLOBAL_DATE_FORMAT)
 	private var id: Int? = null
 	private var fullName: String? = null
 	private var gender: String? = null
@@ -39,7 +39,7 @@ class PersonBuilder(
 		}
 
 		if (action == Action.TERMINATE && terminationDate == null) {
-			terminationDate = LocalDate.now().format(DateTimeFormatter.ofPattern(PayComponent.DATE_FORMAT))
+			terminationDate = LocalDate.now().format(DateTimeFormatter.ofPattern(DateTransformer.GLOBAL_DATE_FORMAT))
 		}
 
 		return Pair(Person(
@@ -102,7 +102,7 @@ class PersonBuilder(
 	fun withTerminationDate(terminationDate: String?): String? {
 		if (terminationDate == null) {
 			if (action == Action.TERMINATE) {
-				this.terminationDate = LocalDate.now().format(DateTimeFormatter.ofPattern(PayComponent.DATE_FORMAT))
+				this.terminationDate = LocalDate.now().format(DateTimeFormatter.ofPattern(DateTransformer.GLOBAL_DATE_FORMAT))
 			}
 			return null
 		}

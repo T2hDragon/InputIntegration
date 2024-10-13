@@ -1,6 +1,8 @@
 # Input Integration
 
 Handles data from different sources, checks that it meets required standards, and outputs it in a consistent format for other systems to use.
+It takes in user input from "./input" directory as .csv files and outputs them to out ".json" files. Mapping can be found [here](#mapping).
+This is a task assignment for Mercans integration team, task can be found [here](./public/assets/Integration_Test%20Assignment%20Instructions.pdf).
 
 ## Requirements
 
@@ -45,7 +47,7 @@ Handles data from different sources, checks that it meets required standards, an
 
 │&emsp;├── [Env.kt](./src/main/kotlin/com/karmoalteberg/Env.kt) (Enviournment variables fetcher)
 
-│&emsp;├── models/config/*.kt (TODO: Describe)
+│&emsp;├── config/*.kt (Configurationˇ)
 
 │&emsp;├── models/output/*.kt (Output DTOs)
 
@@ -63,13 +65,11 @@ Handles data from different sources, checks that it meets required standards, an
 
 ### TODO
 
-&#x2610; Write functional tests
-
 &#x2610; Dockerise
 
-&#x2610; insert_or_update_employees to use transactions
+&#x2610; insert_or_update_employees SQL function to use transactions
 
-&#x2610; Tests written more clearly and split into parts (1 test checking one scenario)
+&#x2610; Tests written more clearly and split into parts (1 test validating one scenario)
 
 ## Tests
 
@@ -137,13 +137,3 @@ Errors are return as a trace to its failure. One row might have multiple reasons
 │&emsp;├── [outputInsertToDb.sql](./scripts/outputInsertToDb.sql) (Example of inserting output payload to database)
 
 │&emsp;├── [peopleSalaries.sql](./scripts/peopleSalaries.sql) (Example of showing people alongside their salaries)
-
-## Questions
-
-- Why is there a need for contractStart/End/StartedAt. They are mentioned, such as terminate being assumed to be ContractCreatedAt, but unsure where it is being used and it should not be shown in the output. Definitely does not belong in the output as of now
-- What is Data supposed to be? As of right now, I am using it as all the existing fields to be placed there.
-Is the given mapping correct?
-- Does Date format need to be consistant throughout the row, throughout the entire CSV file or in case of multiple files, across all csv files?
-- Is Person data only mandatory for HIRE action? Should Hire action not include person table data if for example "full name" is missing?
-- "(optional) bonus points for an SQL script that inserts the same data as the hypothetical
-REST API would based on the JSON." Am I correct to assume that this SQL script takes in the output payload JSON and from that alone adds the values to the database? Aka SQL that takes in the output JSON and knows to how to set take values from it and put them to the database?

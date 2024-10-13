@@ -17,7 +17,7 @@ class MainTest {
 
 		Assert.assertCount(output, 1)
 		Assert.assertNotEmpty(output[0].uuid)
-		assertEquals(output[0].fname, "test.csv")
+		assertEquals(output[0].fname, "input_01.csv")
 		assertNotNull(output[0].errors)
 		Assert.assertCount(output[0].errors!!, 7)
 		Assert.assertCount(output[0].payload, 6)

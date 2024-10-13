@@ -35,6 +35,10 @@ class DateTransformer(
 		// Add more when client informs on new formats and add examples
 	)
 
+	companion object {
+		const val GLOBAL_DATE_FORMAT = "yyyy-MM-dd"
+	}
+
 	fun transformToFormat(dateString: String): Pair<String?, String?> {
 		for (format in formats) {
 			try {
